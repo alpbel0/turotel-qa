@@ -1,0 +1,60 @@
+# Only the databases run in containers; the application runs on the host.
+# All ports bind to 127.0.0.1. Data lives in named volumes, not in the project folder.
+# Compose refuses to start when a required variable is missing from .env.
+
+services:
+  postgres:
+    image: pgvector/pgvector:pg17
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:?set POSTGRES_USER in .env}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in .env}
+      POSTGRES_DB: ${POSTGRES_DB:?set POSTGRES_DB in .env}
+    ports:
+      - "127.0.0.1:${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - turotel_pg_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "PGPASSWORD=$$POSTGRES_PASSWORD psql -h 127.0.0.1 -U $$POSTGRES_USER -d $$POSTGRES_DB -tAc 'SELECT 1' | grep -q 1"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+      start_period: 10s
+
+  neo4j:
+    image: neo4j:5-community
+    environment:
+      NEO4J_AUTH: neo4j/${NEO4J_PASSWORD:?set NEO4J_PASSWORD in .env}
+    ports:
+      - "127.0.0.1:${NEO4J_HTTP_PORT:-7474}:7474"
+      - "127.0.0.1:7687:7687"
+    volumes:
+      - turotel_neo4j_data:/data
+    healthcheck:
+      test: ["CMD-SHELL", "cypher-shell -u neo4j -p \"$${NEO4J_AUTH#neo4j/}\" 'RETURN 1' >/dev/null 2>&1"]
+      interval: 10s
+      timeout: 10s
+      retries: 20
+      start_period: 30s
+
+  # Separate Neo4j for tests (Community edition has a single database).
+  # Shares nothing with the development graph: own volume, own port, own password.
+  neo4j-test:
+    profiles: ["test"]
+    image: neo4j:5-community
+    environment:
+      NEO4J_AUTH: neo4j/${TEST_NEO4J_PASSWORD:?set TEST_NEO4J_PASSWORD in .env}
+    ports:
+      - "127.0.0.1:7688:7687"
+    volumes:
+      - turotel_neo4j_test_data:/data
+    healthcheck:
+      test: ["CMD-SHELL", "cypher-shell -u neo4j -p \"$${NEO4J_AUTH#neo4j/}\" 'RETURN 1' >/dev/null 2>&1"]
+      interval: 10s
+      timeout: 10s
+      retries: 20
+      start_period: 30s
+
+volumes:
+  turotel_pg_data:
+  turotel_neo4j_data:
+  turotel_neo4j_test_data:
