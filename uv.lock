@@ -1196,6 +1196,7 @@ source = { editable = "." }
 dependencies = [
     { name = "alembic" },
     { name = "neo4j" },
+    { name = "numpy" },
     { name = "pgvector" },
     { name = "psycopg", extra = ["binary"] },
     { name = "pyarrow" },
@@ -1228,6 +1229,7 @@ ml = [
 requires-dist = [
     { name = "alembic", specifier = ">=1.13" },
     { name = "neo4j", specifier = ">=5.20,<6" },
+    { name = "numpy", specifier = ">=1.26" },
     { name = "pgvector", specifier = ">=0.3" },
     { name = "psycopg", extras = ["binary"], specifier = ">=3.2" },
     { name = "pyarrow", specifier = ">=16" },

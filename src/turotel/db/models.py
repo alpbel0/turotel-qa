@@ -123,6 +123,8 @@ class Review(Base):
     split: Mapped[str | None] = mapped_column(REVIEW_SPLIT)
     split_assigned_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
     publishable: Mapped[bool] = mapped_column(Boolean, default=False)
+    hotel_type: Mapped[str | None] = mapped_column(Text)
+    stars_given: Mapped[int | None] = mapped_column(SmallInteger)
 
 
 class SplitSnapshot(Base):

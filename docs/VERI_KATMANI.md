@@ -83,6 +83,7 @@ ORDER BY support DESC
 - `reviews`: review_id, source (humir/real/mabsa), text, humir_class, word_len, duplicate_group_id,
   split ENUM (train / silver_val / gold_dev / gold_test / gold_reserve / external_real / external_mabsa), split_assigned_at,
   publishable (CHECK: source ∈ {real, mabsa} ⇒ publishable=false)
+  hotel_type text, stars_given smallint 1-5 (yalnız `source=real`'de dolu; migration 0003)
 - `split_snapshot`: created_at, kapsam (`source=humir`), sha256 (sıralı review_id+split), bölme başına sayılar.
   Bölme betiği `split_assigned_at` dolu satırı değiştirmeyi reddeder; yeniden bölme yalnız etiketleme
   başlamadan, açık bir "sıfırla" komutuyla. Tek istisna: `gold_reserve`'ün bir kez, açık bir komutla

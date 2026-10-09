@@ -121,7 +121,7 @@ inceleme sonucu yazılı.
 
 **Repo:** `turotel-qa`
 **Alan:** `db`
-**Durum:** Başlamadı
+**Durum:** Tamamlandı (2026-10-09)
 **Bağımlılıklar:** Task 0.3, Task 1.1
 
 **Referanslar:** `docs/VERI_KATMANI.md` §3 (Doğrulama)
@@ -130,13 +130,17 @@ inceleme sonucu yazılı.
 
 ### Checklist
 
-- [ ] Kural 1–6 (`docs/VERI_KATMANI.md`): şikâyet ⇔ ham olumsuz etiket (çift yönlü); `done` yorumda tam alt
+- [x] Kural 1–6 (`docs/VERI_KATMANI.md`): şikâyet ⇔ ham olumsuz etiket (çift yönlü); `done` yorumda tam alt
       kategori kümesi, `skip`'te etiket yok; ciddiyete göre durumlar (yalnız human/jev); `recommended` ⇒
       1..üst sınır aksiyon (jev 1, human 3), diğerleri 0; koşu türüne göre NULL kuralları; taksonomi
       kimliklerinin şema sürümünde geçerliliği ve tekrar grubu tek bölmede.
-- [ ] Başarılıysa `validated_at` yazar; hata raporu kural ve satır kimliğiyle.
-- [ ] Eşik değişirse doğrulanmış koşunun `validated_at`'ini silen yardımcı.
-- [ ] Her kural için bilerek bozulmuş örnekle test.
+- [x] Başarılıysa `validated_at` yazar; hata raporu kural ve satır kimliğiyle.
+- [x] Eşik değişirse doğrulanmış koşunun `validated_at`'ini silen yardımcı.
+- [x] Her kural için bilerek bozulmuş örnekle test.
+
+Notlar: kural adları `R1_complaint_label` … `R6_duplicate_group`; hata raporu `kural [satır kimliği]: ayrıntı`. Başarısız doğrulama
+önceki `validated_at`'i de siler. Eşik yardımcısı `clear_validation`. R2'ye ek olarak `review_annotations` satırı olmayan
+yorumdaki etiketler de reddedilir. Komut: `uv run python -m turotel.validation RUN_ID`. 28 test (her kural için bozuk örnek).
 
 **Kabul kriteri:** Her kuralı ihlal eden bir test koşusu doğru kural adıyla reddediliyor; geçerli bir koşu
 `validated_at` alıyor.
@@ -145,7 +149,7 @@ inceleme sonucu yazılı.
 
 **Repo:** `turotel-qa`
 **Alan:** `eval`
-**Durum:** Başlamadı
+**Durum:** Tamamlandı (2026-10-09)
 **Bağımlılıklar:** Task 0.3
 
 **Referanslar:** `docs/PROJE_PLANI.md` §5.5 (Metrikler), §5.6 (Değerlendirme), `docs/VERI_KATMANI.md` §3
@@ -155,13 +159,20 @@ inceleme sonucu yazılı.
 
 ### Checklist
 
-- [ ] Tahmin koşusu vs referans koşu karşılaştırması (eval view'ları üzerinden): konu tespiti mikro+makro
+- [x] Tahmin koşusu vs referans koşu karşılaştırması (eval view'ları üzerinden): konu tespiti mikro+makro
       F1, bahsedilenlerde duygu makro F1, şikâyet tespiti mikro+makro F1, departman makro F1, ciddiyet MAE +
       kuadratik ağırlıklı kappa, ana kategori düzeyinde yeniden hesap.
-- [ ] Öneri metrikleri: MRR (susulan uygun sorgular sıfır puanla paydada), Hit@1, Hit@3, kapsam.
-- [ ] Yorum düzeyinde bootstrap güven aralıkları; eşleştirilmiş bootstrap fark testi; desteği 5'ten az
+- [x] Öneri metrikleri: MRR (susulan uygun sorgular sıfır puanla paydada), Hit@1, Hit@3, kapsam.
+- [x] Yorum düzeyinde bootstrap güven aralıkları; eşleştirilmiş bootstrap fark testi; desteği 5'ten az
       sınıflar makro F1 dışında, destekleri raporlanır.
-- [ ] Sonuçlar `eval_results`'a (`prediction_run_id` oracle'da NULL, `eval_mode`, `config`).
+- [x] Sonuçlar `eval_results`'a (`prediction_run_id` oracle'da NULL, `eval_mode`, `config`).
+
+Notlar: `src/turotel/evaluation/` altında `metrics.py` (saf numpy), `bootstrap.py`, `loading.py`, `core.py`. Karar (2026-10-09):
+departman ve ciddiyet metrikleri yalnız referansta VE tahminde şikâyet olan hücrelerde hesaplanır (şikâyet kaçırma/fazlası
+şikâyet tespiti F1'de sayılır). Ana kategori düzeyi yeniden hesabı konu ve şikâyet tespiti için; bir yorum, alt kategorilerinden
+biri pozitifse pozitiftir. Bootstrap birimi yorum, yüzdelik %95 aralık, varsayılan 1000 tekrar, tohum 42. Eşleştirilmiş fark
+`<metric>_diff` olarak saklanır (p-değeri satırın `config`'inde). Tanımsız (NaN) değerler yazılmaz. `numpy` ana bağımlılığa
+eklendi. M-ABSA `mapped_labels` referansı bu görevde yok (`v_external_eval` yalnız insan koşusu). 14 test.
 
 **Kabul kriteri:** Elle hesaplanmış küçük bir örnekte tüm metrikler birebir tutuyor; aynı tohumla bootstrap
 aynı aralığı veriyor.
@@ -170,7 +181,7 @@ aynı aralığı veriyor.
 
 **Repo:** `turotel-qa`
 **Alan:** `data`
-**Durum:** Başlamadı
+**Durum:** Tamamlandı (2026-10-09)
 **Bağımlılıklar:** Task 0.3
 
 **Referanslar:** `docs/PROJE_PLANI.md` §5.1 (Gerçek yorumlar)
@@ -179,11 +190,16 @@ aynı aralığı veriyor.
 
 ### Checklist
 
-- [ ] Kullanıcının topladığı yorumları (toplama protokolü kullanıcıya ait) `reviews`'a `source=real`,
+- [x] Kullanıcının topladığı yorumları (toplama protokolü kullanıcıya ait) `reviews`'a `source=real`,
       `split=external_real`, `publishable=false` olarak ekleyen komut.
-- [ ] Kişisel bilgi temizliği kullanıcı tarafından yapılmış olarak gelir; komut yalnız boş/çok kısa/tekrar
+- [x] Kişisel bilgi temizliği kullanıcı tarafından yapılmış olarak gelir; komut yalnız boş/çok kısa/tekrar
       kontrolü yapar.
-- [ ] Bu yorumlar `split_snapshot` kapsamına girmez.
+- [x] Bu yorumlar `split_snapshot` kapsamına girmez.
+
+Notlar: `src/turotel/data/real.py` (`uv run python -m turotel.data.real <dosya>`). Girdi: `text` sütunlu `.csv` (`;` veya `,`)
+ya da satır başına bir yorum. `review_id = real-<sha256(temiz metin)[:12]>` (yeniden yükleme idempotent). Atlananlar: boş,
+3 kelimeden kısa, dosya içi tekrar (normalize edilmiş metinle); sayılar raporlanır. Opsiyonel `hotel_type` ve
+`stars_given` (1-5) sütunları `reviews`'a yazılır (migration 0003); diğer sütunlar yok sayılır. 7 test.
 
 **Kabul kriteri:** Örnek bir dosyadan eklenen yorumlar `external_real` olarak görünüyor; HUMIR snapshot
 doğrulaması bozulmuyor; `publishable=true` yapılmaya çalışıldığında veritabanı reddediyor.
