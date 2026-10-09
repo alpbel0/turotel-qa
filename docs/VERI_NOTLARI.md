@@ -26,7 +26,33 @@
 - En sık kategoriler: hotel general 695, service general 518, location general 412,
   rooms design_features 180, rooms general 151, food_drinks quality 116, hotel prices 110,
   rooms cleanliness 99, facilities general 80
-- Cümleler büyük ihtimalle İngilizceden çeviri (doğrulanmadı)
+- **Çeviri (2026-10-07, 20 cümle elle incelendi, doğrulandı):** metinler İngilizce yabancı otel yorumlarının makine çevirisi.
+  Kanıt: "Uzay iğnesi" (Space Needle), "Polyester Levhalar", "Pasifik plajı", Triton / Toronto / Hyde Park, "bunu otel
+  ayırttım", "bu otel otelde kalmalı". Sonuçlar "çevrilmiş Türkçede test edildi" diye raporlanır; Türk otel
+  şikâyetlerindeki başarı olarak sunulmaz. Etiket gürültüsü de var: bazı olumsuz cümleler etiketsiz (419 etiketsiz
+  cümlenin bir kısmı), 8 etikette kategori alanına `polarity positive` sızmış (yorumlanamaz, kapsam dışı).
+- Gerçek Türkçe otel alternatifi arandı (2026-10-07): HF/GitHub taramasında otel alanında hazır, doğal Türkçe, kategori
+  etiketli bir veri seti çıkmadı (absa-tr: e-ticaret/film; STNM: telekom, sentetik; Sengil ve alierkan: restoran;
+  Turkish Tourism ABSA: TripAdvisor turizm merkezleri, yalnız terim+duygu, lisans belirtilmemiş, otel içeriği
+  doğrulanmadı, indirilmedi). Gerçek Türkçe dış sınav = kullanıcının topladığı 100 gerçek yorum.
+- **Eşleme (kod: `src/turotel/data/mabsa.py`, `CATEGORY_MAP`):** M-ABSA kategorileri bizim alt kategorilerden kaba olduğu
+  için net eşleşenler alt kategori, belirsizler yalnızca ana kategori düzeyinde puanlanır; güvenli karşılığı olmayanlar
+  kapsam dışıdır ve "bahsedilmiyor" sayılmaz. `service general` yalnız "Hizmet ve personel".
+  - Alt kategori düzeyi (1.134 etiket): hotel general → genel memnuniyet; hotel quality → otel kalitesi/beklenti;
+    hotel design_features → atmosfer-tasarım-gürültü; rooms cleanliness → oda temizliği; rooms comfort →
+    yatak-konfor-iklim; food_drinks quality → kalite/lezzet; style_options → çeşit/seçenek; prices → yiyecek fiyat.
+  - Yalnız ana kategori (1.735 etiket): hotel comfort → Genel otel deneyimi; hotel/rooms/room_amenities/facilities prices →
+    Fiyat ve değer; rooms general/design_features/quality, room_amenities (fiyat hariç) → Oda ve banyo; food_drinks
+    miscellaneous → Yiyecek-içecek; service general → Hizmet ve personel; location general → Konum ve ulaşım;
+    facilities (fiyat hariç) → Tesis ve aktiviteler (not: "restoran", "banyo" gibi terimler de burada geçiyor, gürültülü).
+  - Kapsam dışı (89 etiket): hotel cleanliness, hotel miscellaneous, rooms miscellaneous, `polarity positive`.
+  - Karşılığı olmayan: ana kategoriler Rezervasyon ve ön büro, Güvenlik; 21 alt kategori (erişim/ulaşım, animasyon, banyo/su,
+    check-in/out, ortak alan, ek ücret, yiyecek servis-sunum, genel fiyat-performans, ödeme-fatura-iptal, havuz-plaj,
+    rezervasyon doğruluğu, oda ekipmanı, oda geneli/büyüklük, güvenlik, spa-spor, personel tutum/yetkinlik/hız/iletişim,
+    çevre/manzara, Wi-Fi).
+  - `miscellaneous` etiketli ~45 cümle okundu: bizim şemada karşılığı olmayan yeni bir konu çıkmadı (iptal sonrası ücret,
+    web sitesi fotoğrafı uyuşmazlığı, gece gösterisi, cep telefonu çekimi vb. mevcut alt kategorilere düşüyor); tek
+    belirsiz nokta oda manzarası (bizde "çevre/manzara/yakınlık"), Task 2.1 rehberine not.
 - Kullanım: Hafta 13'te temiz eşleşen alt kümede Jev ve modelimiz için konu alanında ortak dış sınav (PROJE_PLANI §5.9). Hafta 1 incelemesinde çeviri olduğu görülürse yalnızca "şema aktarım testi" olarak raporlanır.
 
 ### Alanya derlemi — `data/raw/alanya/`
